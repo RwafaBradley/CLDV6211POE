@@ -1,0 +1,125 @@
+﻿@model IEnumerable<EventEaseApp.Models.Booking>
+
+@{
+    ViewData["Title"] = "Bookings";
+}
+
+<h1>Bookings</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div class="alert alert-danger">
+            @error.ErrorMessage
+        </div>
+    }
+}
+
+<form method="get" class="mb-4 row g-3">
+    <div class="col-md-3">
+        <label for="searchString" class="form-label">Search</label>
+        <input type="text"
+               name="searchString"
+               id="searchString"
+               class="form-control"
+               placeholder="Search booking ID, venue or event"
+               value="@ViewBag.SearchString" />
+    </div>
+    <div class="col-md-3">
+        <label for="searchTypeId" class="form-label">Event Type</label>
+        <select name="searchTypeId"
+                id="searchTypeId"
+                class="form-control"
+                asp-items="ViewBag.EventTypes">
+            <option value="">–– All Types ––</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="venueId" class="form-label">Venue</label>
+        <select name="venueId"
+                id="venueId"
+                class="form-control"
+                asp-items="ViewBag.Venues">
+            <option value="">–– All Venues ––</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="startDate" class="form-label">Start Date</label>
+        <input type="date"
+               name="startDate"
+               id="startDate"
+               class="form-control"
+               value="@ViewBag.StartDate" />
+    </div>
+    <div class="col-md-3">
+        <label for="endDate" class="form-label">End Date</label>
+        <input type="date"
+               name="endDate"
+               id="endDate"
+               class="form-control"
+               value="@ViewBag.EndDate" />
+    </div>
+    <div class="col-md-3">
+        <label for="availability" class="form-label">Venue Availability</label>
+        <select name="availability"
+                id="availability"
+                class="form-control"
+                asp-items="ViewBag.AvailabilityList">
+            <option value="">–– All Statuses ––</option>
+        </select>
+    </div>
+    <div class="col-md-3 align-self-end">
+        <button type="submit" class="btn btn-primary me-2">Filter</button>
+        <a asp-action="Index" class="btn btn-secondary">Clear</a>
+    </div>
+</form>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New Booking</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Venue</th>
+            <th>Venue Availability</th>
+            <th>Event</th>
+            <th>Event Type</th>
+            <th>Booking Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var booking in Model)
+        {
+            <tr>
+                <td>@booking.BookingId</td>
+                <td>@booking.Venue?.VenueName</td>
+                <td>@booking.Venue?.IsAvailable</td>
+                <td>@booking.Event?.EventName</td>
+                <td>@booking.Event?.EventType?.Name</td>
+                <td>@booking.BookingDate.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@booking.BookingId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@booking.BookingId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@booking.BookingId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

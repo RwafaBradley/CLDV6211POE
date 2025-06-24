@@ -1,0 +1,100 @@
+﻿@model IEnumerable<EventEaseApp.Models.Event>
+
+@{
+    ViewData["Title"] = "Events";
+}
+
+<h1>Events</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div class="alert alert-danger">
+            @error.ErrorMessage
+        </div>
+    }
+}
+
+<form method="get" class="mb-4 row g-3">
+    <div class="col-md-3">
+        <label for="searchString" class="form-label">Search</label>
+        <input type="text"
+               name="searchString"
+               id="searchString"
+               class="form-control"
+               placeholder="Search name or description"
+               value="@ViewBag.SearchString" />
+    </div>
+    <div class="col-md-3">
+        <label for="searchTypeId" class="form-label">Event Type</label>
+        <select name="searchTypeId"
+                id="searchTypeId"
+                class="form-control"
+                asp-items="ViewBag.EventTypes">
+            <option value="">–– All Types ––</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="venueId" class="form-label">Venue</label>
+        <select name="venueId"
+                id="venueId"
+                class="form-control"
+                asp-items="ViewBag.Venues">
+            <option value="">–– All Venues ––</option>
+        </select>
+    </div>
+    <div class="col-md-3 align-self-end">
+        <button type="submit" class="btn btn-primary me-2">Filter</button>
+        <a asp-action="Index" class="btn btn-secondary">Clear</a>
+    </div>
+</form>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New Event</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.EventName)</th>
+            <th>@Html.DisplayNameFor(m => m.EventDate)</th>
+            <th>Type</th>
+            <th>@Html.DisplayNameFor(m => m.Descriptions)</th>
+            <th>Venue</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.EventName</td>
+                <td>@item.EventDate.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@item.EventType?.Name</td>
+                <td>@item.Descriptions</td>
+                <td>@item.Venue?.VenueName</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.EventId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.EventId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.EventId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

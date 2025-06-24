@@ -1,0 +1,71 @@
+﻿@model IEnumerable<EventEaseApp.Models.Venue>
+
+@{
+    ViewData["Title"] = "Venues";
+}
+
+<h1>Venues</h1>
+
+@if (TempData["ErrorMessage"] !=null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+
+@if (!ViewData.ModelState.IsValid)
+{
+    foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div class="alert alert-danger">
+            @error.ErrorMessage
+        </div>
+    }
+}
+
+
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.VenueId)</th>
+            <th>@Html.DisplayNameFor(m => m.VenueName)</th>
+            <th>@Html.DisplayNameFor(m => m.Locations)</th>
+            <th>@Html.DisplayNameFor(m => m.Capacity)</th>
+            <th>@Html.DisplayNameFor(m => m.IsAvailable)</th>
+            <th>Venue Image</th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.VenueId</td>
+                <td>@item.VenueName</td>
+                <td>@item.Locations</td>
+                <td>@item.Capacity</td>
+                <td>@item.IsAvailable</td>
+                <td>@item.ImageUrl</td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.VenueId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.VenueId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.VenueId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
